@@ -1,2 +1,79 @@
-# Khởi tạo cụm ELK (Elasticsearch & Kibana)
-# (Chưa cấu hình chi tiết)
+# Cấu hình cụm ELK siêu nhẹ (Single-Node, Disable Security)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+spec:
+  replicas: 1 # Chỉ chạy 1 node
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
+        ports:
+        - containerPort: 9200
+        env:
+        - name: discovery.type
+          value: "single-node" # BẮT BUỘC để ES không đi tìm node khác
+        - name: xpack.security.enabled
+          value: "false" # Tắt SSL/Password để Spark và Kibana dễ connect (dành cho môi trường dev)
+        - name: ES_JAVA_OPTS
+          value: "-Xms1g -Xmx1g" # BẮT BUỘC: Ép ES chỉ dùng 1GB RAM. Nếu không nó sẽ nuốt trọn RAM hệ thống.
+        resources:
+          requests:
+            memory: "1.5Gi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+spec:
+  ports:
+  - port: 9200
+  selector:
+    app: elasticsearch
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:8.6.2
+        ports:
+        - containerPort: 5601
+        env:
+        - name: ELASTICSEARCH_HOSTS
+          value: "http://elasticsearch:9200"
+        resources:
+          requests:
+            memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+spec:
+  type: NodePort # Mở port ra ngoài mạng để User truy cập giao diện
+  ports:
+  - port: 5601
+    nodePort: 30561 # Truy cập Kibana qua IP_EC2:30561
+  selector:
+    app: kibana
