@@ -1,0 +1,15 @@
+{
+  "mappings": {
+    "properties": {
+      "ip_address": { "type": "ip" },
+      "timestamp": { "type": "date" },
+      "http_method": { "type": "keyword" },
+      "endpoint": { "type": "keyword" },
+      "protocol": { "type": "keyword" },
+      "status_code": { "type": "integer" },
+      "response_size_bytes": { "type": "integer" },
+      "referer": { "type": "keyword" },
+      "user_agent": { "type": "text" }
+    }
+  }
+}

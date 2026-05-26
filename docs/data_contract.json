@@ -1,0 +1,45 @@
+{
+  "type": "object",
+  "properties": {
+    "ip_address": { 
+      "type": "string", 
+      "description": "Chuỗi (String) - Trên Elasticsearch sẽ map thành kiểu IP" 
+    },
+    "timestamp": { 
+      "type": "string", 
+      "description": "Chuỗi - BẮT BUỘC convert sang chuẩn ISO8601" 
+    },
+    "http_method": { 
+      "type": "string", 
+      "description": "Chuỗi - Chỉ nhận GET, POST, PUT, DELETE..." 
+    },
+    "endpoint": { 
+      "type": "string", 
+      "description": "Chuỗi - Nên cắt bỏ chuỗi params sau dấu ?" 
+    },
+    "protocol": { 
+      "type": "string", 
+      "description": "Chuỗi" 
+    },
+    "status_code": { 
+      "type": "integer", 
+      "description": "Số nguyên (Integer) - Cấm dùng chuỗi '200'" 
+    },
+    "response_size_bytes": { 
+      "type": "integer", 
+      "description": "Số nguyên (Integer) - Xử lý ngoại lệ: Nếu '-' thành 0" 
+    },
+    "referer": { 
+      "type": "string", 
+      "description": "Chuỗi" 
+    },
+    "user_agent": { 
+      "type": "string", 
+      "description": "Chuỗi" 
+    }
+  },
+  "required": [
+    "ip_address", "timestamp", "http_method", "endpoint", 
+    "protocol", "status_code", "response_size_bytes", "referer", "user_agent"
+  ]
+}

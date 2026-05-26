@@ -1,0 +1,9 @@
+# Bỏ qua các file rác, .env, venv/, thư mục spark-warehouse/
+.env
+venv/
+env/
+__pycache__/
+*.pyc
+spark-warehouse/
+.idea/
+.vscode/
