@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: kafka
-        image: bitnami/kafka:latest
+        image: bitnami/kafka:3.6.2
         ports:
         - containerPort: 9092
         env:
@@ -37,7 +37,7 @@ spec:
           value: "CONTROLLER"
         # THÊM DÒNG NÀY: Thay bằng IP Public của EC2 hiện tại
         - name: KAFKA_CFG_ADVERTISED_LISTENERS
-          value: "PLAINTEXT://<ĐIỀN_IP_PUBLIC_CỦA_AWS_VÀO_ĐÂY>:9092"
+          value: "PLAINTEXT://98.84.11.81:9092"
         resources:
           requests:
             memory: "512Mi" 
