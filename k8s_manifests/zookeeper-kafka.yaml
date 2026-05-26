@@ -8,7 +8,7 @@ spec:
     matchLabels:
       app: kafka
   serviceName: kafka-headless
-  replicas: 1 # Chạy duy nhất 1 node
+  replicas: 1 
   template:
     metadata:
       labels:
@@ -16,28 +16,28 @@ spec:
     spec:
       containers:
       - name: kafka
-        image: bitnami/kafka:3.6.2
+        image: apache/kafka:3.7.0
         ports:
         - containerPort: 9092
         env:
-        - name: KAFKA_ENABLE_KRAFT
-          value: "yes"
-        - name: KAFKA_CFG_NODE_ID
-          value: "0"
-        - name: KAFKA_CFG_PROCESS_ROLES
-          value: "controller,broker"
-        # Sửa thành 0.0.0.0 để lắng nghe mọi kết nối
-        - name: KAFKA_CFG_LISTENERS
+        # Cú pháp của bản gốc Apache sẽ bỏ chữ "CFG_" đi
+        - name: KAFKA_NODE_ID
+          value: "1"
+        - name: KAFKA_PROCESS_ROLES
+          value: "broker,controller"
+        - name: KAFKA_LISTENERS
           value: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
-        - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
-          value: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
-        - name: KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
-          value: "0@localhost:9093"
-        - name: KAFKA_CFG_CONTROLLER_LISTENER_NAMES
-          value: "CONTROLLER"
-        # THÊM DÒNG NÀY: Thay bằng IP Public của EC2 hiện tại
-        - name: KAFKA_CFG_ADVERTISED_LISTENERS
+        - name: KAFKA_ADVERTISED_LISTENERS
           value: "PLAINTEXT://98.84.11.81:9092"
+        - name: KAFKA_CONTROLLER_LISTENER_NAMES
+          value: "CONTROLLER"
+        - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+          value: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
+        - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+          value: "1@localhost:9093"
+        # Bản gốc yêu cầu bắt buộc phải cấp một ID cụm
+        - name: CLUSTER_ID
+          value: "kraft-cluster-id-123456" 
         resources:
           requests:
             memory: "512Mi" 
@@ -51,7 +51,7 @@ metadata:
   name: kafka
   namespace: default
 spec:
-  type: LoadBalancer # Sửa thành LoadBalancer để mở cổng
+  type: LoadBalancer 
   ports:
   - port: 9092
     targetPort: 9092
