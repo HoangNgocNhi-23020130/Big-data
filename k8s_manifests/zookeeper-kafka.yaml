@@ -8,7 +8,7 @@ spec:
     matchLabels:
       app: kafka
   serviceName: kafka-headless
-  replicas: 1 
+  replicas: 1 # Chạy duy nhất 1 node
   template:
     metadata:
       labels:
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: kafka
-        image: bitnami/kafka:3.4.0
+        image: bitnami/kafka:latest
         ports:
         - containerPort: 9092
         env:
