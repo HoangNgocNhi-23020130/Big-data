@@ -7,3 +7,8 @@ __pycache__/
 spark-warehouse/
 .idea/
 .vscode/
+
+# Dataset & Data files
+*.csv
+*.log
+log_producer/data/
