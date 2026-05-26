@@ -71,9 +71,9 @@ kind: Service
 metadata:
   name: kibana
 spec:
-  type: NodePort # Mở port ra ngoài mạng để User truy cập giao diện
+  type: LoadBalancer
   ports:
   - port: 5601
-    nodePort: 30561 # Truy cập Kibana qua IP_EC2:30561
+    targetPort: 5601
   selector:
     app: kibana
