@@ -1,15 +1,17 @@
-# Chuyển sang dùng Java 11 chính chủ (eclipse-temurin) 
-# Mục đích: Fix lỗi "java.nio.DirectByteBuffer" do PySpark 3.3.x không tương thích tốt với Java 17 (bản mặc định của Python slim)
-FROM eclipse-temurin:11-jre
+# Chốt phương án TỐI ƯU NHẤT: Dùng Python 3.9 trên nền Debian 11 (Bullseye)
+# - python:3.9: Tránh lỗi "typing.io" của Python 3.12+ (do PySpark 3.3 không hỗ trợ Python đời quá mới)
+# - bullseye: Debian 11 mặc định dùng Java 11 (Tránh lỗi ByteBuffer của Java 17)
+FROM python:3.9-slim-bullseye
 
-# Cài đặt Python 3 và Pip
-RUN apt-get update && \
-    apt-get install -y python3 python3-pip && \
+# Cài đặt Java 11 (default-jre trên Bullseye chính là OpenJDK 11)
+RUN mkdir -p /usr/share/man/man1 && \
+    apt-get update && \
+    apt-get install -y default-jre && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 COPY stream_processor.py .
 
-CMD ["python3", "stream_processor.py"]
+CMD ["python", "stream_processor.py"]
