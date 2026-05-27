@@ -38,6 +38,12 @@ spec:
         # Bản gốc yêu cầu bắt buộc phải cấp một ID cụm
         - name: CLUSTER_ID
           value: "kraft-cluster-id-123456" 
+        - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+          value: "1"
+        - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+          value: "1"
+        - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
+          value: "1"
         resources:
           requests:
             memory: "512Mi" 
