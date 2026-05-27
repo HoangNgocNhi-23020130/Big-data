@@ -66,7 +66,8 @@ def main():
         .outputMode("append") \
         .option("es.nodes", ES_NODES) \
         .option("es.port", ES_PORT) \
-        .option("es.resource", f"{ES_INDEX}/_doc") \
+        .option("es.nodes.wan.only", "true") \
+        .option("es.resource", ES_INDEX) \
         .option("checkpointLocation", "/tmp/spark-checkpoints/weblogs") \
         .start()
 
