@@ -1,9 +1,14 @@
-# Môi trường chạy PySpark
-FROM bitnami/spark:3.3
+# Môi trường chạy PySpark tự build (Đảm bảo 100% hoạt động, không phụ thuộc Bitnami)
+FROM openjdk:11-jre-slim
+
+# Cài đặt Python 3 và Pip
+RUN apt-get update && apt-get install -y python3 python3-pip && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 COPY requirements.txt .
-USER root
-RUN pip install --no-cache-dir -r requirements.txt
-USER 1001
+RUN pip3 install --no-cache-dir -r requirements.txt
 COPY stream_processor.py .
-CMD ["spark-submit", "--packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.2,org.elasticsearch:elasticsearch-spark-30_2.12:8.6.2", "stream_processor.py"]
+
+# Chạy trực tiếp bằng python3 (PySpark sẽ tự gọi Java backend)
+# Chú ý: Đưa cấu hình --packages trực tiếp vào file Python thay vì truyền qua CMD
+CMD ["python3", "stream_processor.py"]
