@@ -1,2 +1,41 @@
-# Khởi tạo Master/Worker cho Spark Cluster
-# (Chưa cấu hình chi tiết)
+# Triển khai Ứng dụng Spark Streaming chạy chế độ Local[*] trên 1 Pod
+# Phù hợp cho cụm K3s ngân sách thấp, không cần setup Master/Worker cồng kềnh.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-streaming-processor
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spark-streaming
+  template:
+    metadata:
+      labels:
+        app: spark-streaming
+    spec:
+      containers:
+      - name: pyspark-processor
+        # Dùng image build trực tiếp trên máy ảo EC2
+        image: spark-weblog:local
+        imagePullPolicy: IfNotPresent # BẮT BUỘC: Không lên mạng tải, chỉ dùng image nội bộ
+        env:
+        # Trỏ đến các Service do Người 1 đã dựng
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "kafka:9092" 
+        - name: KAFKA_TOPIC
+          value: "weblogs"
+        - name: ES_NODES
+          value: "elasticsearch" 
+        - name: ES_PORT
+          value: "9200"
+        - name: ES_INDEX
+          value: "weblogs"
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
