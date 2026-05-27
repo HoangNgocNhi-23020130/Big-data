@@ -12,4 +12,6 @@ spark-warehouse/
 *.csv
 *.log
 log_producer/data/
+
+key.pem
 command.docx

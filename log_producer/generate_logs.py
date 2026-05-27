@@ -2,6 +2,39 @@ import os
 import time
 from kafka import KafkaProducer
 
+# Regex chuẩn cho Apache/Nginx Combined Access Log
+# Mẫu: 54.36.149.41 - - [22/Jan/2019:03:56:14 +0330] "GET /filter/27 HTTP/1.1" 200 30577 "-" "Mozilla/5.0..."
+LOG_REGEX = re.compile(
+    r'^(?P<ip>\S+) \S+ \S+ \[(?P<time>[^\]]+)\] "(?P<method>[A-Z]+) (?P<endpoint>[^ "]+) (?P<protocol>HTTP/[0-9.]+)" (?P<status>\d{3}) (?P<size>\d+|-) "(?P<referer>[^"]*)" "(?P<agent>[^"]*)"'
+)
+
+def parse_log_line(line):
+    match = LOG_REGEX.match(line)
+    if not match:
+        return None
+    
+    data = match.groupdict()
+    
+    # Convert thời gian từ chuẩn Apache (22/Jan/2019:03:56:14 +0330) sang chuẩn ISO8601 cho Elasticsearch
+    try:
+        # Tách phần múi giờ ra để xử lý nếu cần, hoặc dùng strptime
+        dt_obj = datetime.strptime(data['time'], "%d/%b/%Y:%H:%M:%S %z")
+        iso_time = dt_obj.isoformat()
+    except Exception:
+        iso_time = data['time'] # Lỗi thì giữ nguyên cho Spark xử lý
+
+    return {
+        "ip_address": data['ip'],
+        "timestamp": iso_time,
+        "http_method": data['method'],
+        "endpoint": data['endpoint'],
+        "protocol": data['protocol'],
+        "status_code": int(data['status']),
+        "response_size_bytes": data['size'], # Trả về '-' hoặc số, Spark sẽ tự ép kiểu
+        "referer": data['referer'],
+        "user_agent": data['agent']
+    }
+
 def main():
     print("Bắt đầu khởi động Log Producer (Chế độ Big Data - Raw Stream)...")
 

@@ -16,6 +16,7 @@ def main():
     # 1. Khởi tạo SparkSession
     spark = SparkSession.builder \
         .appName("WebLogStreamingProcessor") \
+        .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.2,org.elasticsearch:elasticsearch-spark-30_2.12:8.6.2") \
         .getOrCreate()
         
     spark.sparkContext.setLogLevel("WARN")
