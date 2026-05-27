@@ -1,5 +1,5 @@
 # Môi trường chạy PySpark
-FROM bitnami/spark:3.3.2
+FROM bitnami/spark:3.3
 WORKDIR /app
 COPY requirements.txt .
 USER root
