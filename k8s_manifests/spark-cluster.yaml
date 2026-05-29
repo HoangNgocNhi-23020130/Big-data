@@ -6,7 +6,7 @@ metadata:
   name: spark-streaming-processor
   namespace: default
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: spark-streaming
@@ -38,4 +38,4 @@ spec:
             cpu: "1"
           limits:
             memory: "4Gi"
-            cpu: "2"
+            cpu: "3"
