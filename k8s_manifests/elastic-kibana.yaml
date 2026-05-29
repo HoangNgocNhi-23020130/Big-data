@@ -24,11 +24,14 @@ spec:
         - name: xpack.security.enabled
           value: "false" # Tắt SSL/Password để Spark và Kibana dễ connect (dành cho môi trường dev)
         - name: ES_JAVA_OPTS
-          value: "-Xms1g -Xmx1g" # BẮT BUỘC: Ép ES chỉ dùng 1GB RAM. Nếu không nó sẽ nuốt trọn RAM hệ thống.
+          value: "-Xms4g -Xmx4g" # BẮT BUỘC: Ép ES chỉ dùng 1GB RAM. Nếu không nó sẽ nuốt trọn RAM hệ thống.
         resources:
           requests:
-            memory: "1.5Gi"
-            cpu: "500m"
+            memory: "4Gi"
+            cpu: "2"
+          limits:
+            memory: "6Gi"
+            cpu: "4"
 ---
 apiVersion: v1
 kind: Service
@@ -65,6 +68,8 @@ spec:
         resources:
           requests:
             memory: "512Mi"
+          limits:
+            memory: "1Gi"
 ---
 apiVersion: v1
 kind: Service
